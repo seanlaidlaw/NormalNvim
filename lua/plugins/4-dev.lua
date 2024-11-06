@@ -149,6 +149,23 @@ return {
     end,
   },
 
+  --  Git conflict [git conflict resolution]
+  --  https://github.com/akinsho/git-conflict.nvim
+  {
+    "akinsho/git-conflict.nvim",
+    version = "^1.1.2",
+    event = "User BaseGitFile",
+    opts = {
+      default_mappings = false, -- disable buffer local mapping created by this plugin
+      default_commands = true, -- disable commands created by this plugin
+      disable_diagnostics = false, -- This will disable the diagnostics in a buffer whilst it is conflicted
+      highlights = { -- They must have background color, otherwise the default color will be used
+        incoming = "DiffAdd",
+        current = "DiffText",
+      },
+    },
+  },
+
   --  ANALYZER ----------------------------------------------------------------
   --  [symbols tree]
   --  https://github.com/stevearc/aerial.nvim
@@ -206,11 +223,11 @@ return {
         callback = function()
           local is_aerial = vim.bo.filetype == "aerial"
           local is_ufo_available =
-              require("base.utils").is_available("nvim-ufo")
+            require("base.utils").is_available("nvim-ufo")
           if
-              is_ufo_available
-              and is_aerial
-              and vim.b.new_aerial_session == nil
+            is_ufo_available
+            and is_aerial
+            and vim.b.new_aerial_session == nil
           then
             vim.b.new_aerial_session = false
             require("aerial").tree_set_collapse_level(0, 0)
@@ -344,12 +361,11 @@ return {
 
   --  copilot [github code suggestions]
   --  https://github.com/github/copilot.vim
-  --  As alternative to chatgpt, you can use copilot uncommenting this.
-  --  Then you must run :Copilot setup
-  -- {
-  --   "github/copilot.vim",
-  --   event = "User BaseFile"
-  -- },
+  --  run :Copilot setup to initialize
+  {
+    "github/copilot.vim",
+    event = "User BaseFile",
+  },
   -- copilot-cmp
   -- https://github.com/zbirenbaum/copilot-cmp
   -- {
@@ -473,7 +489,7 @@ return {
       dap.adapters.python = {
         type = "executable",
         command = vim.fn.stdpath("data")
-            .. "/mason/packages/debugpy/venv/bin/python",
+          .. "/mason/packages/debugpy/venv/bin/python",
         args = { "-m", "debugpy.adapter" },
       }
       dap.configurations.python = {
@@ -558,13 +574,13 @@ return {
           initCommands = function() -- add rust types support (optional)
             -- Find out where to look for the pretty printer Python module
             local rustc_sysroot =
-                vim.fn.trim(vim.fn.system("rustc --print sysroot"))
+              vim.fn.trim(vim.fn.system("rustc --print sysroot"))
 
             local script_import = 'command script import "'
-                .. rustc_sysroot
-                .. '/lib/rustlib/etc/lldb_lookup.py"'
+              .. rustc_sysroot
+              .. '/lib/rustlib/etc/lldb_lookup.py"'
             local commands_file = rustc_sysroot
-                .. "/lib/rustlib/etc/lldb_commands"
+              .. "/lib/rustlib/etc/lldb_commands"
 
             local commands = {}
             local file = io.open(commands_file, "r")
@@ -626,8 +642,8 @@ return {
           request = "launch",
           name = "Launch dart",
           dartSdkPath = "/opt/flutter/bin/cache/dart-sdk/", -- ensure this is correct
-          flutterSdkPath = "/opt/flutter",                  -- ensure this is correct
-          program = "${workspaceFolder}/lib/main.dart",     -- ensure this is correct
+          flutterSdkPath = "/opt/flutter", -- ensure this is correct
+          program = "${workspaceFolder}/lib/main.dart", -- ensure this is correct
           cwd = "${workspaceFolder}",
         },
         {
@@ -635,8 +651,8 @@ return {
           request = "launch",
           name = "Launch flutter",
           dartSdkPath = "/opt/flutter/bin/cache/dart-sdk/", -- ensure this is correct
-          flutterSdkPath = "/opt/flutter",                  -- ensure this is correct
-          program = "${workspaceFolder}/lib/main.dart",     -- ensure this is correct
+          flutterSdkPath = "/opt/flutter", -- ensure this is correct
+          program = "${workspaceFolder}/lib/main.dart", -- ensure this is correct
           cwd = "${workspaceFolder}",
         },
       }
@@ -654,7 +670,7 @@ return {
           request = "launch",
           name = "Launch kotlin program",
           projectRoot = "${workspaceFolder}/app", -- ensure this is correct
-          mainClass = "AppKt",                    -- ensure this is correct
+          mainClass = "AppKt", -- ensure this is correct
         },
       }
 
@@ -723,7 +739,7 @@ return {
       dap.adapters.bashdb = {
         type = "executable",
         command = vim.fn.stdpath("data")
-            .. "/mason/packages/bash-debug-adapter/bash-debug-adapter",
+          .. "/mason/packages/bash-debug-adapter/bash-debug-adapter",
         name = "bashdb",
       }
       dap.configurations.sh = {
@@ -733,9 +749,9 @@ return {
           name = "Launch file",
           showDebugOutput = true,
           pathBashdb = vim.fn.stdpath("data")
-              .. "/mason/packages/bash-debug-adapter/extension/bashdb_dir/bashdb",
+            .. "/mason/packages/bash-debug-adapter/extension/bashdb_dir/bashdb",
           pathBashdbLib = vim.fn.stdpath("data")
-              .. "/mason/packages/bash-debug-adapter/extension/bashdb_dir",
+            .. "/mason/packages/bash-debug-adapter/extension/bashdb_dir",
           trace = true,
           file = "${file}",
           program = "${file}",
@@ -879,10 +895,10 @@ return {
         virtual_text = {
           format = function(diagnostic)
             local message = diagnostic.message
-                :gsub("\n", " ")
-                :gsub("\t", " ")
-                :gsub("%s+", " ")
-                :gsub("^%s+", "")
+              :gsub("\n", " ")
+              :gsub("\t", " ")
+              :gsub("%s+", " ")
+              :gsub("^%s+", "")
             return message
           end,
         },

@@ -135,10 +135,6 @@ if not is_android then
   -- only useful when the option clipboard is commented on ./1-options.lua
   maps.n["<C-y>"] = { '"+y<esc>', desc = "Copy to cliboard" }
   maps.x["<C-y>"] = { '"+y<esc>', desc = "Copy to cliboard" }
-  maps.n["<C-d>"] =
-    { '"+y<esc>dd', desc = "Copy to clipboard and delete line" }
-  maps.x["<C-d>"] =
-    { '"+y<esc>dd', desc = "Copy to clipboard and delete line" }
   maps.n["<C-p>"] = { '"+p<esc>', desc = "Paste from clipboard" }
 end
 
@@ -212,8 +208,6 @@ maps.n["<ESC>"] = {
 }
 
 -- Improved tabulation ------------------------------------------------------
-maps.x["<S-Tab>"] = { "<gv", desc = "unindent line" }
-maps.x["<Tab>"] = { ">gv", desc = "indent line" }
 maps.x["<"] = { "<gv", desc = "unindent line" }
 maps.x[">"] = { ">gv", desc = "indent line" }
 
@@ -295,7 +289,7 @@ maps.n["<leader>pc"] =
   { "<cmd>DistroReadChangelog<cr>", desc = "Distro changelog" }
 
 -- buffers/tabs [buffers ]--------------------------------------------------
-maps.n["<leader>c"] = { -- Close window and buffer at the same time.
+maps.n["<leader>x"] = { -- Close window and buffer at the same time.
   function() require("heirline-components.buffer").wipe() end,
   desc = "Wipe buffer",
 }
@@ -318,7 +312,7 @@ maps.n["<leader>ba"] = {
   function() vim.cmd("wa") end,
   desc = "Write all changed buffers",
 }
-maps.n["]b"] = {
+maps.n["<Tab>"] = {
   function()
     require("heirline-components.buffer").nav(
       vim.v.count > 0 and vim.v.count or 1
@@ -326,7 +320,7 @@ maps.n["]b"] = {
   end,
   desc = "Next buffer",
 }
-maps.n["[b"] = {
+maps.n["<S-Tab>"] = {
   function()
     require("heirline-components.buffer").nav(
       -(vim.v.count > 0 and vim.v.count or 1)
@@ -425,22 +419,6 @@ maps.n["<leader>b|"] = {
 }
 
 -- quick movement aliases
-maps.n["<C-k>"] = {
-  function()
-    require("heirline-components.buffer").nav(
-      vim.v.count > 0 and vim.v.count or 1
-    )
-  end,
-  desc = "Next buffer",
-}
-maps.n["<C-j>"] = {
-  function()
-    require("heirline-components.buffer").nav(
-      -(vim.v.count > 0 and vim.v.count or 1)
-    )
-  end,
-  desc = "Previous buffer",
-}
 maps.n["<S-Down>"] = {
   function() vim.api.nvim_feedkeys("5j", "n", true) end,
   desc = "Fast move down",
@@ -460,7 +438,8 @@ maps.n["<localleader>c"] = { "<Plug>RDSendChunk" }
 -- ["<localleader>n"] = { ':call RAction("names")<CR>' },
 maps.n["<LocalLeader>n"] = { "<Cmd>lua require('r.run').action('names')<CR>" }
 -- ["<localleader>r"] = { ':call RAction("rownames")<CR>' },
-maps.n["<LocalLeader>r"] = { "<Cmd>lua require('r.run').action('rownames')<CR>" }
+maps.n["<LocalLeader>r"] =
+  { "<Cmd>lua require('r.run').action('rownames')<CR>" }
 -- ["<localleader>dm"] = { ':call RAction("dim")<CR>' },
 maps.n["<LocalLeader>dm"] = { "<Cmd>lua require('r.run').action('dim')<CR>" }
 
@@ -717,6 +696,36 @@ if vim.fn.executable("gitui") == 1 then -- if gitui exists, show it
   }
 end
 
+-- git conflict
+if is_available("git-conflict.nvim") then
+  maps.n["<leader>gco"] = {
+    function() require("git-conflict").choose("ours") end,
+    desc = "Choose ours",
+  }
+  maps.n["<leader>gct"] = {
+    function() require("git-conflict").choose("theirs") end,
+    desc = "Choose theirs",
+  }
+  maps.n["<leader>gcb"] = {
+    function() require("git-conflict").choose("both") end,
+    desc = "Choose both",
+  }
+  maps.n["<leader>gc0"] = {
+    function() require("git-conflict").choose("none") end,
+    desc = "Choose none",
+  }
+  maps.n["<leader>gcn"] = {
+    function() require("git-conflict").next_conflict() end,
+    desc = "Next conflict",
+  }
+  maps.n["<leader>gcp"] = {
+    function() require("git-conflict").prev_conflict() end,
+    desc = "Previous conflict",
+  }
+end
+
+maps.v["<Leader>g-"] = { ":'<,'>diffput<cr>", noremap = true, silent = true }
+
 -- file browsers ------------------------------------
 -- yazi
 if is_available("yazi.nvim") and vim.fn.executable("yazi") == 1 then
@@ -967,7 +976,7 @@ if is_available("telescope.nvim") then
     end,
     desc = "Find themes",
   }
-  maps.n["<leader>ff"] = {
+  maps.n["<C-g>"] = {
     function()
       require("telescope.builtin").live_grep({
         additional_args = function(args)
@@ -1104,8 +1113,8 @@ if is_available("toggleterm.nvim") then
     "<cmd>ToggleTerm size=80 direction=vertical<cr>",
     desc = "Toggleterm vertical split",
   }
-  maps.n["<F7>"] = { "<cmd>ToggleTerm<cr>", desc = "terminal" }
-  maps.t["<F7>"] = maps.n["<F7>"]
+  maps.n["<F2>"] = { "<cmd>ToggleTerm<cr>", desc = "terminal" }
+  maps.t["<F2>"] = maps.n["<F2>"]
   maps.n["<C-'>"] = maps.n["<F7>"] -- requires terminal that supports binding <C-'>
   maps.t["<C-'>"] = maps.n["<F7>"] -- requires terminal that supports binding <C-'>
 end
