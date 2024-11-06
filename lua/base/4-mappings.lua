@@ -450,6 +450,28 @@ maps.n["<S-Up>"] = {
   desc = "Fast move up",
 }
 
+-- R-nvim bindings
+maps.n["<localleader>à"] = { "<Plug>RDSendLine" }
+-- ;p sends paragraph to R console and moves down
+maps.n["<localleader>p"] = { "<Plug>RDSendParagraph" }
+-- ;c sends chunk to R console and moves down
+maps.n["<localleader>c"] = { "<Plug>RDSendChunk" }
+
+-- ["<localleader>n"] = { ':call RAction("names")<CR>' },
+maps.n["<LocalLeader>n"] = { "<Cmd>lua require('r.run').action('names')<CR>" }
+-- ["<localleader>r"] = { ':call RAction("rownames")<CR>' },
+maps.n["<LocalLeader>r"] = { "<Cmd>lua require('r.run').action('rownames')<CR>" }
+-- ["<localleader>dm"] = { ':call RAction("dim")<CR>' },
+maps.n["<LocalLeader>dm"] = { "<Cmd>lua require('r.run').action('dim')<CR>" }
+
+-- <c-p> prints object under cursor
+maps.n["<c-p>"] = { "<Plug>RObjectPr" }
+
+-- ;l clears R console
+maps.n["<localleader>l"] = { "<Plug>RClearConsole" }
+-- ;q saves environment and quits R
+maps.n["<localleader>q"] = { "<Plug>RSaveClose" }
+
 -- tabs
 maps.n["]t"] = { function() vim.cmd.tabnext() end, desc = "Next tab" }
 maps.n["[t"] = { function() vim.cmd.tabprevious() end, desc = "Previous tab" }
