@@ -1,0 +1,18 @@
+repos:
+  - repo: local
+    hooks:
+      - id: stylua
+        name: StyLua
+        entry: stylua
+        language: system
+        types: [lua]             # Ensure it targets only Lua files
+        args: ["--config-path", ".stylua.toml"]  # Optional: specify the path to your StyLua config file
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        types: [lua]             # Ensure it applies only to Lua files
