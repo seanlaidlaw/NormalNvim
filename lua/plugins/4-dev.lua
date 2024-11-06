@@ -88,6 +88,12 @@ return {
     end,
   },
 
+  -- install wakatime
+  {
+    "wakatime/vim-wakatime",
+    lazy = false,
+  },
+
   --  GIT ---------------------------------------------------------------------
   --  Git signs [git hunks]
   --  https://github.com/lewis6991/gitsigns.nvim
