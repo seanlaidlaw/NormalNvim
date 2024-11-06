@@ -999,4 +999,15 @@ return {
     cmd = "StartupTime",
     config = function() vim.g.startuptime_tries = 10 end,
   },
+
+  --  vim-startuptime [startup time measurement]
+  --  https://github.com/dstein64/vim-startuptime
+  --  run :StartupTime to see what took so long
+  {
+    "dstein64/vim-startuptime",
+    cmd = "StartupTime",
+    config = function()
+      vim.g.startuptime_tries = 10
+    end,
+  },
 } -- end of return
