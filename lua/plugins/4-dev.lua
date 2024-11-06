@@ -390,11 +390,21 @@ return {
   },
 
   --  copilot [github code suggestions]
-  --  https://github.com/github/copilot.vim
-  --  run :Copilot setup to initialize
+  --  https://github.com/zbirenbaum/copilot.lua
   {
-    "github/copilot.vim",
+    "zbirenbaum/copilot.lua",
     event = "User BaseFile",
+    opts = {
+      suggestion = {
+        enabled = true,
+        auto_trigger = true,
+        keymap = {
+          accept = "<C-y>",
+          next = "<C-n>",
+          dismiss = "<C-]>",
+        },
+      },
+    },
   },
 
   -- [guess-indent]
