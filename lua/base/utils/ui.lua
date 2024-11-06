@@ -33,14 +33,13 @@
 --      -> toggle_wrap
 --      -> toggle_zen_mode
 
-
 local M = {}
 local utils = require("base.utils")
 local function bool2str(bool) return bool and "on" or "off" end
 
 --- Change the number display modes
 function M.change_number()
-  local number = vim.wo.number                 -- local to window
+  local number = vim.wo.number -- local to window
   local relativenumber = vim.wo.relativenumber -- local to window
   if not number and not relativenumber then
     vim.wo.number = true
@@ -51,21 +50,34 @@ function M.change_number()
   else -- not number and relativenumber
     vim.wo.relativenumber = false
   end
-  utils.notify(string.format("number %s, relativenumber %s", bool2str(vim.wo.number), bool2str(vim.wo.relativenumber)))
+  utils.notify(
+    string.format(
+      "number %s, relativenumber %s",
+      bool2str(vim.wo.number),
+      bool2str(vim.wo.relativenumber)
+    )
+  )
 end
 
 --- Set the indent and tab related numbers
 function M.set_indent()
-  local input_avail, input = pcall(vim.fn.input, "Set indent value (>0 expandtab, <=0 noexpandtab): ")
+  local input_avail, input =
+    pcall(vim.fn.input, "Set indent value (>0 expandtab, <=0 noexpandtab): ")
   if input_avail then
     local indent = tonumber(input)
     if not indent or indent == 0 then return end
     vim.bo.expandtab = (indent > 0) -- local to buffer
     indent = math.abs(indent)
-    vim.bo.tabstop = indent         -- local to buffer
-    vim.bo.softtabstop = indent     -- local to buffer
-    vim.bo.shiftwidth = indent      -- local to buffer
-    utils.notify(string.format("indent=%d %s", indent, vim.bo.expandtab and "expandtab" or "noexpandtab"))
+    vim.bo.tabstop = indent -- local to buffer
+    vim.bo.softtabstop = indent -- local to buffer
+    vim.bo.shiftwidth = indent -- local to buffer
+    utils.notify(
+      string.format(
+        "indent=%d %s",
+        indent,
+        vim.bo.expandtab and "expandtab" or "noexpandtab"
+      )
+    )
   end
 end
 
@@ -84,7 +96,12 @@ end
 --- Toggle auto format
 function M.toggle_autoformat()
   vim.g.autoformat_enabled = not vim.g.autoformat_enabled
-  utils.notify(string.format("Global autoformatting %s", bool2str(vim.g.autoformat_enabled)))
+  utils.notify(
+    string.format(
+      "Global autoformatting %s",
+      bool2str(vim.g.autoformat_enabled)
+    )
+  )
 end
 
 --- Toggle autopairs
@@ -97,9 +114,11 @@ function M.toggle_autopairs()
       autopairs.disable()
     end
     vim.g.autopairs_enabled = autopairs.state.disabled
-    utils.notify(string.format("autopairs %s", bool2str(not autopairs.state.disabled)))
+    utils.notify(
+      string.format("autopairs %s", bool2str(not autopairs.state.disabled))
+    )
   else
-    utils.notify "autopairs not available"
+    utils.notify("autopairs not available")
   end
 end
 
@@ -116,7 +135,12 @@ function M.toggle_buffer_autoformat(bufnr)
   local old_val = vim.b[bufnr].autoformat_enabled
   if old_val == nil then old_val = vim.g.autoformat_enabled end
   vim.b[bufnr].autoformat_enabled = not old_val
-  utils.notify(string.format("Buffer autoformatting %s", bool2str(vim.b[bufnr].autoformat_enabled)))
+  utils.notify(
+    string.format(
+      "Buffer autoformatting %s",
+      bool2str(vim.b[bufnr].autoformat_enabled)
+    )
+  )
 end
 
 --- Toggle LSP inlay hints (buffer)
@@ -124,19 +148,36 @@ end
 function M.toggle_buffer_inlay_hints(bufnr)
   bufnr = bufnr or 0
   vim.b[bufnr].inlay_hints_enabled = not vim.b[bufnr].inlay_hints_enabled
-  vim.lsp.inlay_hint.enable(vim.b[bufnr].inlay_hints_enabled, { bufnr = bufnr })
-  utils.notify(string.format("Buffer inlay hints %s", bool2str(vim.b[bufnr].inlay_hints_enabled)))
+  vim.lsp.inlay_hint.enable(
+    vim.b[bufnr].inlay_hints_enabled,
+    { bufnr = bufnr }
+  )
+  utils.notify(
+    string.format(
+      "Buffer inlay hints %s",
+      bool2str(vim.b[bufnr].inlay_hints_enabled)
+    )
+  )
 end
 
 --- Toggle buffer semantic token highlighting for all language servers that support it
 --- @param bufnr? number the buffer to toggle `semantic tokens` on.
 function M.toggle_buffer_semantic_tokens(bufnr)
   bufnr = bufnr or 0
-  vim.b[bufnr].semantic_tokens_enabled = not vim.b[bufnr].semantic_tokens_enabled
+  vim.b[bufnr].semantic_tokens_enabled =
+    not vim.b[bufnr].semantic_tokens_enabled
   for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
     if client.server_capabilities.semanticTokensProvider then
-      vim.lsp.semantic_tokens[vim.b[bufnr].semantic_tokens_enabled and "start" or "stop"](bufnr, client.id)
-      utils.notify(string.format("Buffer lsp semantic highlighting %s", bool2str(vim.b[bufnr].semantic_tokens_enabled)))
+      vim.lsp.semantic_tokens[vim.b[bufnr].semantic_tokens_enabled and "start" or "stop"](
+        bufnr,
+        client.id
+      )
+      utils.notify(
+        string.format(
+          "Buffer lsp semantic highlighting %s",
+          bool2str(vim.b[bufnr].semantic_tokens_enabled)
+        )
+      )
     end
   end
 end
@@ -151,11 +192,15 @@ function M.toggle_buffer_syntax(bufnr)
   if vim.bo[bufnr].syntax == "off" then
     if ts_avail and parsers.has_parser() then vim.treesitter.start(bufnr) end
     vim.bo[bufnr].syntax = "on"
-    if not vim.b.semantic_tokens_enabled then M.toggle_buffer_semantic_tokens(bufnr, true) end
+    if not vim.b.semantic_tokens_enabled then
+      M.toggle_buffer_semantic_tokens(bufnr, true)
+    end
   else
     if ts_avail and parsers.has_parser() then vim.treesitter.stop(bufnr) end
     vim.bo[bufnr].syntax = "off"
-    if vim.b.semantic_tokens_enabled then M.toggle_buffer_semantic_tokens(bufnr, true) end
+    if vim.b.semantic_tokens_enabled then
+      M.toggle_buffer_semantic_tokens(bufnr, true)
+    end
   end
   utils.notify(string.format("syntax %s", bool2str(vim.bo[bufnr].syntax)))
 end
@@ -179,9 +224,11 @@ function M.toggle_coverage_signs(bufnr)
   bufnr = bufnr or 0
   vim.b[bufnr].coverage_signs_enabled = not vim.b[bufnr].coverage_signs_enabled
   if vim.b[bufnr].coverage_signs_enabled then
-    utils.notify("Coverage signs on:" ..
-                 "\n\n- Git signs will be temporary disabled." ..
-                 "\n- Diagnostic signs won't be automatically disabled.")
+    utils.notify(
+      "Coverage signs on:"
+        .. "\n\n- Git signs will be temporary disabled."
+        .. "\n- Diagnostic signs won't be automatically disabled."
+    )
     vim.cmd("Gitsigns toggle_signs")
     require("coverage").load(true)
   else
@@ -195,27 +242,34 @@ end
 function M.toggle_cmp()
   vim.g.cmp_enabled = not vim.g.cmp_enabled
   local ok, _ = pcall(require, "cmp")
-  utils.notify(ok and string.format("completion %s", bool2str(vim.g.cmp_enabled)) or "completion not available")
+  utils.notify(
+    ok and string.format("completion %s", bool2str(vim.g.cmp_enabled))
+      or "completion not available"
+  )
 end
 
 --- Toggle conceal=2|0
 function M.toggle_conceal()
   vim.opt.conceallevel = vim.opt.conceallevel:get() == 0 and 2 or 0
-  utils.notify(string.format("conceal %s", bool2str(vim.opt.conceallevel:get() == 2)))
+  utils.notify(
+    string.format("conceal %s", bool2str(vim.opt.conceallevel:get() == 2))
+  )
 end
 
 --- Toggle diagnostics
 function M.toggle_diagnostics()
   vim.g.diagnostics_mode = (vim.g.diagnostics_mode - 1) % 4
-  vim.diagnostic.config(require("base.utils.lsp").diagnostics[vim.g.diagnostics_mode])
+  vim.diagnostic.config(
+    require("base.utils.lsp").diagnostics[vim.g.diagnostics_mode]
+  )
   if vim.g.diagnostics_mode == 0 then
-    utils.notify "diagnostics off"
+    utils.notify("diagnostics off")
   elseif vim.g.diagnostics_mode == 1 then
-    utils.notify "only status diagnostics"
+    utils.notify("only status diagnostics")
   elseif vim.g.diagnostics_mode == 2 then
-    utils.notify "virtual text off"
+    utils.notify("virtual text off")
   else
-    utils.notify "all diagnostics on"
+    utils.notify("all diagnostics on")
   end
 end
 
@@ -224,7 +278,9 @@ local last_active_foldcolumn
 function M.toggle_foldcolumn()
   local curr_foldcolumn = vim.wo.foldcolumn
   if curr_foldcolumn ~= "0" then last_active_foldcolumn = curr_foldcolumn end
-  vim.wo.foldcolumn = curr_foldcolumn == "0" and (last_active_foldcolumn or "1") or "0"
+  vim.wo.foldcolumn = curr_foldcolumn == "0"
+      and (last_active_foldcolumn or "1")
+    or "0"
   utils.notify(string.format("foldcolumn=%s", vim.wo.foldcolumn))
 end
 
@@ -235,12 +291,14 @@ function M.toggle_inlay_hints(bufnr)
   vim.g.inlay_hints_enabled = not vim.g.inlay_hints_enabled -- flip global state
   vim.b.inlay_hints_enabled = not vim.g.inlay_hints_enabled -- sync buffer state
   vim.lsp.buf.inlay_hint.enable(vim.g.inlay_hints_enabled, { bufnr = bufnr }) -- apply state
-  utils.notify(string.format("Global inlay hints %s", bool2str(vim.g.inlay_hints_enabled)))
+  utils.notify(
+    string.format("Global inlay hints %s", bool2str(vim.g.inlay_hints_enabled))
+  )
 end
 
 --- Toggle lsp signature
 function M.toggle_lsp_signature()
-  local state = require('lsp_signature').toggle_float_win()
+  local state = require("lsp_signature").toggle_float_win()
   utils.notify(string.format("lsp signature %s", bool2str(state)))
 end
 
@@ -288,20 +346,26 @@ end
 --- Toggle showtabline=2|0
 function M.toggle_tabline()
   vim.opt.showtabline = vim.opt.showtabline:get() == 0 and 2 or 0
-  utils.notify(string.format("tabline %s", bool2str(vim.opt.showtabline:get() == 2)))
+  utils.notify(
+    string.format("tabline %s", bool2str(vim.opt.showtabline:get() == 2))
+  )
 end
 
 --- Toggle notifications for UI toggles
 function M.toggle_ui_notifications()
   vim.g.notifications_enabled = not vim.g.notifications_enabled
-  utils.notify(string.format("Notifications %s", bool2str(vim.g.notifications_enabled)))
+  utils.notify(
+    string.format("Notifications %s", bool2str(vim.g.notifications_enabled))
+  )
 end
 
 --- Toggle URL/URI syntax highlighting rules
 function M.toggle_url_effect()
   vim.g.url_effect_enabled = not vim.g.url_effect_enabled
   require("base.utils").set_url_effect()
-  utils.notify(string.format("URL effect %s", bool2str(vim.g.url_effect_enabled)))
+  utils.notify(
+    string.format("URL effect %s", bool2str(vim.g.url_effect_enabled))
+  )
 end
 
 --- Toggle wrap
@@ -320,7 +384,7 @@ function M.toggle_zen_mode(bufnr)
     vim.b[bufnr].zen_mode = false
   end
   utils.notify(string.format("zen mode %s", bool2str(vim.b[bufnr].zen_mode)))
-  vim.cmd "ZenMode"
+  vim.cmd("ZenMode")
 end
 
 return M

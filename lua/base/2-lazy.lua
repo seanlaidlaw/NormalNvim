@@ -12,7 +12,7 @@
 -- Lazy updater options
 -- Use the same values you have in the plugin `distroupdate.nvim`
 local updates_config = {
-  channel = "stable",                  -- 'nightly', or 'stable'
+  channel = "stable", -- 'nightly', or 'stable'
   snapshot_file = "lazy_snapshot.lua", -- plugins lockfile created by running the command ':DistroFreezePluginVersions' provided by `distroupdate.nvim`.
 }
 
@@ -59,17 +59,15 @@ end
 --- load `<config_dir>/lua/lazy_snapshot.lua` and return it as table).
 --- @return table spec A table you can pass to the `spec` option of lazy.
 local function get_lazy_spec()
-  local snapshot_filename = vim.fn.fnamemodify(updates_config.snapshot_file, ":t:r")
+  local snapshot_filename =
+    vim.fn.fnamemodify(updates_config.snapshot_file, ":t:r")
   local pin_plugins = updates_config.channel == "stable"
   local snapshot_file_exists = vim.uv.fs_stat(
-    vim.fn.stdpath("config")
-    .. "/lua/"
-    .. snapshot_filename
-    .. ".lua"
+    vim.fn.stdpath("config") .. "/lua/" .. snapshot_filename .. ".lua"
   )
   local spec = pin_plugins
       and snapshot_file_exists
-      and { { import = snapshot_filename} }
+      and { { import = snapshot_filename } }
     or {}
   vim.list_extend(spec, { { import = "plugins" } })
 

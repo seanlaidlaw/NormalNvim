@@ -51,7 +51,7 @@ return {
   CompilerStop = "",
   CompilerRedo = "",
   NeoTree = "",
-  Aerial = "" ,
+  Aerial = "",
   ZenMode = "󰰶",
   BufWrite = "",
   BufWriteAll = "",
@@ -129,5 +129,5 @@ return {
   MasonPending = "⟳",
 
   -- Render-markdown
-  RenderMarkdown = { ' ', ' ', '󰲥 ', '󰲧 ', '󰲩 ', '󰲫 ' }
+  RenderMarkdown = { " ", " ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
 }
