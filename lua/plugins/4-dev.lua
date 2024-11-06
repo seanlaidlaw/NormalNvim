@@ -396,13 +396,6 @@ return {
     "github/copilot.vim",
     event = "User BaseFile",
   },
-  -- copilot-cmp
-  -- https://github.com/zbirenbaum/copilot-cmp
-  -- {
-  --   "zbirenbaum/copilot-cmp",
-  --   opts = { suggesion = { enabled = false }, panel = { enabled = false } },
-  --   config = function (_, opts) require("copilot_cmp").setup(opts) end
-  -- },
 
   -- [guess-indent]
   -- https://github.com/NMAC427/guess-indent.nvim
