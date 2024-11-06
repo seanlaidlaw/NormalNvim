@@ -15,6 +15,7 @@
 --       -> aerial.nvim                    [symbols tree]
 --       -> litee-calltree.nvim            [calltree]
 --       -> vim-startuptime                [startup time measurement]
+--       -> marks.nvim                     [marks visualization]
 
 --       ## CODE DOCUMENTATION
 --       -> dooku.nvim                     [html doc generator]
@@ -235,6 +236,29 @@ return {
         end,
       })
     end,
+  },
+
+  -- Show marks in gutter [marks visualization]
+  -- marks are added by m[a-z]
+  -- marks are removed by dm[a-z]
+  {
+    "chentoast/marks.nvim",
+    event = "User BaseFile",
+    opts = {
+      -- default configuration
+      default_mappings = true,
+      builtin_marks = { ".", "<", ">", "^" },
+      cyclic = true,
+      force_write_shada = false,
+      refresh_interval = 250,
+      sign_priority = { lower = 10, upper = 15, builtin = 8, bookmark = 20 },
+      excluded_filetypes = {},
+      marks_signs = {
+        bookmark_annotation = "☰",
+        upper = "▲",
+        lower = "▼",
+      },
+    },
   },
 
   -- Litee calltree [calltree]
