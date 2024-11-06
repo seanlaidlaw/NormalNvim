@@ -112,17 +112,6 @@ return {
     event = "User BaseFile",
   },
 
-  --  smart-splits [move and resize buffers]
-  --  https://github.com/mrjones2014/smart-splits.nvim
-  {
-    "mrjones2014/smart-splits.nvim",
-    event = "User BaseFile",
-    opts = {
-      ignored_filetypes = { "nofile", "quickfix", "qf", "prompt" },
-      ignored_buftypes = { "nofile" },
-    },
-  },
-
   -- better-scape.nvim [esc]
   -- https://github.com/max397574/better-escape.nvim
   {

@@ -23,7 +23,7 @@
 --       -> git                                [git]
 --       -> file browsers
 --       -> session manager
---       -> smart-splits.nvim
+--       -> custom smart splits
 --       -> aerial.nvim
 --       -> litee-calltree.nvim
 --       -> telescope.nvim                     [find]
@@ -785,52 +785,43 @@ if is_available("resession.nvim") then
   }
 end
 
--- smart-splits.nvim
-if is_available("smart-splits.nvim") then
-  maps.n["<C-h>"] = {
-    function() require("smart-splits").move_cursor_left() end,
-    desc = "Move to left split",
-  }
-  maps.n["<C-j>"] = {
-    function() require("smart-splits").move_cursor_down() end,
-    desc = "Move to below split",
-  }
-  maps.n["<C-k>"] = {
-    function() require("smart-splits").move_cursor_up() end,
-    desc = "Move to above split",
-  }
-  maps.n["<C-l>"] = {
-    function() require("smart-splits").move_cursor_right() end,
-    desc = "Move to right split",
-  }
-  maps.n["<C-Up>"] = {
-    function() require("smart-splits").resize_up() end,
-    desc = "Resize split up",
-  }
-  maps.n["<C-Down>"] = {
-    function() require("smart-splits").resize_down() end,
-    desc = "Resize split down",
-  }
-  maps.n["<C-Left>"] = {
-    function() require("smart-splits").resize_left() end,
-    desc = "Resize split left",
-  }
-  maps.n["<C-Right>"] = {
-    function() require("smart-splits").resize_right() end,
-    desc = "Resize split right",
-  }
-else
-  maps.n["<C-h>"] = { "<C-w>h", desc = "Move to left split" }
-  maps.n["<C-j>"] = { "<C-w>j", desc = "Move to below split" }
-  maps.n["<C-k>"] = { "<C-w>k", desc = "Move to above split" }
-  maps.n["<C-l>"] = { "<C-w>l", desc = "Move to right split" }
-  maps.n["<C-Up>"] = { "<cmd>resize -2<CR>", desc = "Resize split up" }
-  maps.n["<C-Down>"] = { "<cmd>resize +2<CR>", desc = "Resize split down" }
-  maps.n["<C-Left>"] =
-    { "<cmd>vertical resize -2<CR>", desc = "Resize split left" }
-  maps.n["<C-Right>"] =
-    { "<cmd>vertical resize +2<CR>", desc = "Resize split right" }
+-- Custom smart split
+
+-- Move or create split function
+---@param key 'h'|'j'|'k'|'l'
+local function move_or_create_win(key)
+  local fn = vim.fn
+  local curr_win = fn.winnr()
+  vim.cmd("wincmd " .. key) --> attempt to move
+
+  if curr_win == fn.winnr() then --> didn't move, so create a split
+    if key == "h" or key == "l" then
+      vim.cmd("wincmd v")
+    else
+      vim.cmd("wincmd s")
+    end
+
+    vim.cmd("wincmd " .. key)
+  end
 end
+
+-- Smart split movements
+maps.n["<C-h>"] =
+  { function() move_or_create_win("h") end, desc = "Move/create left split" }
+maps.n["<C-j>"] =
+  { function() move_or_create_win("j") end, desc = "Move/create down split" }
+maps.n["<C-k>"] =
+  { function() move_or_create_win("k") end, desc = "Move/create up split" }
+maps.n["<C-l>"] =
+  { function() move_or_create_win("l") end, desc = "Move/create right split" }
+
+-- Resize with arrows
+maps.n["<C-Up>"] = { "<cmd>resize -2<CR>", desc = "Resize split up" }
+maps.n["<C-Down>"] = { "<cmd>resize +2<CR>", desc = "Resize split down" }
+maps.n["<C-Left>"] =
+  { "<cmd>vertical resize -2<CR>", desc = "Resize split left" }
+maps.n["<C-Right>"] =
+  { "<cmd>vertical resize +2<CR>", desc = "Resize split right" }
 
 -- aerial.nvimm ------------------------------------------------------------
 if is_available("aerial.nvim") then
